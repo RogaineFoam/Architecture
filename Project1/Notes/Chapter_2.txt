@@ -1,0 +1,474 @@
+operationNotes On Chapter 2:
+
+Key:
+ [] -> Sub Script
+ {} -> Super Script
+
+
+Title Instructions:
+________________________________________________________________________________
+Section 1: Introduction
+
+  Instruction Set:
+    Def: Vocabulary of commands as understood by a given architecture.
+
+  Goal of Design:
+    - To find a language That makes it easy to build the hardware and the compiler
+      while maximizing performance and minimizing cost.
+
+  Stored Program Concept:
+    Def: The Idea that instructions and data of many types can be stored in
+         memory as numbers and thus be easy to change.
+
+________________________________________________________________________________
+Section 2: Signed and Unsigned Numbers
+
+  Binary Digit: "Bit"
+    Def: One of 2 numbers in base 2, Either 0 or 1, that are components of information.
+
+  Generalized Positional Numbering System:
+    - Value of the ith value of D
+    Form: D x Base[i]
+
+  Most Significant Bit:
+    Def: Left Most bit in a bit string.
+
+  Least Significant Bit:
+    Def: Right Most bit in a bit string.
+
+  Variations on Bits:
+    - LegV8 Double Word has a possibility of 2^64 bit patterns.
+
+      Total Number of Variations:
+        - 2^32 - 1 is 4,294,967,295 combinations
+
+  Unsigned Numbers:
+    - Numbers that are only positive, cannot represent negative numbers.
+
+  Overflow:
+    - The propper number of an operation cannot be represented than overflow has taken place.
+
+  Sign and Magnitude Representation:
+    Def: Where one bit represents the sign of the number(Positive or Negative)
+         and the rest dictates the magnitude.
+
+    Shortcomings:
+      1. Separate sign bit meant that there was both a + and - zero.
+      2. Where to position the sign bit? right or left?
+      3. Adders may need an extra step to set the sign. (inefficient)
+
+  2'S Complement:
+    Def: A signed number representation where the leading 0 indicates a positive and
+         and a leading 1 indicates a negative number.
+
+    Advantages:
+      - All negative numbers have a corresponding positive number.
+      - Standard for computing hardware.
+
+    Evaluation:
+      - Sign bit holds the most negative value.
+      - The rest of the bits are the positive contribution.
+
+    General:
+      - 2's complement representation of of the magnitude of the largest number is
+        1 less than the magnitude of the most negative number.
+        Form: 2^64 -> 2^64 -1  (Zero considered positive number)
+
+    Detecting OverFlow:
+      - Occurs when the leftmost retained bit in the bit pattern is not the same
+        as the infinite number of digits to the left. (The sign bit is incorrect)
+
+      - When signs of the values being added are the same and the resulting sign is
+        different.
+
+  Sign Extension Vs Zero Extension:
+    Unsigned Numbers: Zero Extend
+      2's Complement: Sign Extend
+
+  Memory Addresses:
+    - Start at 0 and work their way up to the highest address space. 2^32 supports 4GB address space.
+
+  One's Complement:
+    Def: A notation that represents the most negative value y 10...000, and Most
+         positive by 01...11, leaving an equal number of negatives and positives
+         but ending up with 2 zeros, (one + and one -), Term also means the
+         inversion of every bit in a pattern.
+
+  Biassed Notation:
+    Def: A notations that represents the most negative value by 00...000, and
+         the most positive by 11..11, with 0 having the value 10...000, thereby
+         biassing the number such that the number plus the bias has a non negative
+         representation.
+________________________________________________________________________________
+2.3 Operations On Computer Hardware:
+
+  LegV8 Arithmetic Format:
+    - Each Operation requires an Operator and 3 Operands.
+    EX: Add a, b, c
+
+  Commenting Code:
+    Format: // Comment Here
+
+  Design Principal 1: Simplicity Favors Regularity:
+    - Keep hardware simple by encoding instructions in similar formats.
+
+  Subtraction and Addition Instructions:
+    Sub:
+      Form: SUB a, b, c  -> a = b - c (Order Matters!)
+
+    Add:
+      Form: ADD a, b, c  -> a = b + c (order does not matter)
+
+  Java:
+    - Originally Envisioned as an interpreted language.
+    - Interpreter code produced is called Java Byte Code.
+    - Today Java compiles byte code into native instruction sets such as ARM or Intel.
+
+  LEGv8 Architecture:
+    - 32 registers total.
+    - 2^62 addressable double-word precision memory space. (2^62 64 bit addresses available.)
+    - Each address is byte addressable, Addresses Differ By 8 bytes (64 bits)
+
+  LEGv8 Register Naming Convention:
+    - X0 -> X30
+    - X0 is hardcoded to be 0.
+
+  Arithmetic Instructions: Table 2.3.2 Section 3
+    1. Add:
+        - ADD X1, X2, X3
+
+    2. Subtract:
+        - SUB X1, X2, X3
+
+    3. Add Immediate:
+        - ADDI X1, X2, IMM
+
+    4. Subtract Immediate:
+        - SUBI X1, X2, IMM
+
+    5. Add and Set Flags:
+        - ADDS X1, X2, X3
+
+    6. Subtract and Set Flags:
+        - SUBS X1, X2, X3
+
+    7. Add Immediate and Set Flags:
+        - ADDIS X1, X2, X3
+
+    8. Subtract Immediate and Set Flags:
+        - SUBIS X1, X2, X3
+
+  Data Transfer Instructions: [X?, IMM] -> Memory[X? + IMM]
+
+    1. Load Register:
+        - LDUR X1, [X2, 40]
+
+    2. Store Register:
+        - SDUR X1, [X2, 40]
+
+    3. Load Signed Word:
+        - LDURSW X1, [X2, 40]
+
+    4. Store Word:
+        - STURW X1, [X2, 40]
+
+    5. Load Half:
+        - LDURH X1, [X2, 40]
+
+    6. Store Half:
+        - STURH X1, [X2, 40]
+
+    7. Load Byte:
+        - LDURB X1, [X2, 40]
+
+    8. Store Byte:
+        - STURB X1, [X2, 40]
+
+    9. Load Exclusive Register:
+        - LDXR X1, [X2, 0]
+
+    10. Store Exclusive Register:
+        - STXR X1, X3, [X2]
+
+    11. Move Wide with 0:
+        - MOVZ X1, 20
+
+    11. Move Wide with Keep:
+        - MOVK X1, 20
+
+  Logical Operations:
+    1. AND
+
+    2. Inclusive Or:
+        - ORR
+
+    3. Exclusive Or:
+        - XOR
+
+    4. ANDI
+
+    5. ORRI
+
+    6. EORI
+
+    7. Logical Shift Left:
+        - LSL X1, X2, IMM
+
+    8. Logical Shift Right:
+        - LSR X1, X2, IMM
+
+  Branching:
+     Conditional:
+        1. Compare and Branch on Zero:
+            - CBZ X1, IMM
+
+        2. Compare and Branch on Not Equal to Zero:
+            - CBNZ X1, IMM
+
+        3. Branch Conditionally:
+            - B.cond IMM
+
+      Unconditional:
+        1. Branch:
+            - b IMM
+
+        2. Branch to Register:
+            - b X30
+
+        3. Branch with Link:
+            - BL IMM
+________________________________________________________________________________
+Section 2.4 Operends In Computer Hardware:
+
+  Size Of registers:
+    - 64 bits(DoubleWord)
+
+  Word:
+    Def: natural unit oF Access in a Computer, 32 bits.
+
+  DoubleWord:
+    Def: Another Natural Unit of Access in a computer, 64 bits.
+
+  High Level Vs Assembly Programming:
+    - registers are fast, but few.
+
+  Design Principal 2: Smaller is Faster!
+    - Larger Number of registers means increased clock cycle time.
+      * this is because it takes more time to signal a greater number of registers.
+
+    - Does not deal in absolutes in terms of performance.
+
+  Compiler Responsibility:
+    - Associate program variables with registers.
+
+  Data Structures: Objects
+    - Stored in memory and not registers.
+
+  Data Transfer Instructions:
+    Def: Command that moves data between memory and registers.
+
+  Address:
+    Def: A value used to delineate the location of a specific data element within
+         a memory array.
+
+  Load:
+    Def: Moving Data from Memory to register.
+
+  Base Address:
+    Def: Starting address of the array in memory
+
+  Base Register:
+    Def: Register containing the base address.
+
+  Offset:
+    Def: Constant value added to the base address to locate a particular element.
+
+  LEGv8 Memory Addressing:
+    - Each address is byte addressable.
+    - Aligned on a Double Word Boundary. (8 bytes)
+    - Can function in either big/little endian hierarchy.
+
+  Store Instructions:
+    Def: Copies data from a register and stores it in memory.
+
+  Alignment Restriction:
+    Def: A requirement that data be aligned in memory on natural boundaries. Doubleword!
+      - ARMv8 does not have this restriction, unless it is stack, or instruction fetches.
+
+  Spilling Registers:
+    Def:  Practice of placing less frequently used variables into Memory.
+
+  Hardware Fundamentals:
+    - Memory is slower than registers.
+    - Registers have a quicker access time and higher throughput than memory.
+
+    Efficient Design:
+      - Must have adequate number of registers for operations.
+      - Compiler must use these registers in a most efficient manner.
+
+  Immediate Reasoning:
+    - Try to prevent unnecessary and expensive loads from memory for constants.
+      * without immediate instructions value would have to be loaded from memory before operation could take place.
+      * With Immediate the value can be placed directly into the register.
+
+  Making the Common Case Fast:
+    - Implement hardware such that often used components are either built in or
+      easily accessible by the hardware.
+      Ex: X0 register
+________________________________________________________________________________
+Section 2.5: Addition and Subtraction:
+
+  General:
+    - Computers do not have a subtract operation, they simply add a negative.
+
+  Overflow with Addition: 2's Complement:
+    - When adding operands of different signs overflow cannot occur.
+    - Adding 2 values of the same sign where the result is the opposite sign.(+,+ = -) <- Overflow occurred.
+
+  Overflow with Subtraction: 2's Complement:
+    - When the signs of the operands are the same overflow cannot occur.
+    - When Subtracting a + from a - value and result is and get a negative result. (vice versa)
+
+  Arithmetic Logical Unit:
+    Def: Hardware that performs arithmetical and logical operations.
+
+  OverFlow in Unsigned Numbers:
+    - Easy to find
+    - Often Ignored because they mostly represent memory addresses.
+
+  Saturation:
+    - Highest possible setting where no further increments are allowed.
+
+________________________________________________________________________________
+Section 2.6: Representing Instructions in the Computer:
+
+  Fields:
+    - Encoding formats for instructions, Each field represents an element of the encoded instruction.
+    Ex: ADD = 10001011000, X21 = 10101
+
+  Instruction Format:
+    Def: A form of representation of an instruction composed of fields of binary numbers.
+
+  Machine Language:
+    Def: Binary representation used for communication within a computer system.
+
+  Encoding ADD Instruction: ADD DST, SRC1, SRC2
+    Add     SRC2   Unused   SRC1    DST
+  11 bits  5 Bits  6 bits  5 Bits  5 Bits
+
+  HexDecimal:
+    Def: Base 16 Number
+
+  Encoding Of LEGv8 Instructions:
+
+    Register Format:  SUB RD, RN, RM
+      Format:  Opcode     RM     SHAMT     RN     RD
+                 11b      5b      6b       5b     5b
+
+    Data Transfer Format: LDUR RD, [RN, #ADDR]
+      Format:  Opcode     ADDR     OP2       RN     RT
+                 11b       9b       2b       5b     5b
+
+    Immediate Format: ADDI RD, RN, IMM
+      Format:  Opcode     Immediate     RN      RD
+                 10b         12b        5b      5b
+
+  Opcode: -> Basic Operation of the instruction.
+      RM: -> Second Source Register
+   SHAMT: -> Shift Amount
+      RN: -> First Source Register
+      RD: -> Destination Register.
+      RT: -> Data Source
+    ADDR: -> Offset from Address in Register RN
+
+  Opcode:
+    Def: Field that denotes the operation and format of an instruction.
+
+  Design Principal 3: Good Design Demands Good Compromises:
+________________________________________________________________________________
+Section 2.7: Logical Operations:
+
+  Logical Instructions:
+
+    Shift:
+      Def: Moves all the bits of a double-word to the left or right.
+
+    LEGv8 Shift Instructions:
+      LSL: Left Shift Logical
+        - Multiplying bits by 2 each time shifted.
+
+      RSL: Right Shift Logical
+        - Dividing Bits by 2 each time shifted.
+
+    AND:
+      Def: Logical Bit by bit operation with 2 operands that calculate a 1 only
+           if there is a 1 in both operands.
+
+           Function:
+             - Good For Hiding bits/masking.
+
+    Masking:
+      - Hides information on bits that are not set.
+      - AND is most commonly used mask.
+
+    OR:
+      Def: Logical Bit by Bit Operation with 2 operands that calculate a 1
+           if there is a 1 in either operand.
+
+           Function:
+             - Good for setting Bits
+
+    NOT:
+      Def: Logical Bit By Bit Operation that Inverts the bit string.
+           1 becomes 0, vice versa.
+
+    EOR:
+      Def: Logical Bit by bit operation that calculates the exclusive or of the
+           operands. Calculates a 1 only if the 2 src operands are different.
+________________________________________________________________________________
+Section 2.8: Instructions for Making Decisions:
+
+   Conditional Branch/Jumps:
+     Def: A condition that tests the value and that value for a subsequent
+          transfer of control to a new address in the program based on the
+          outcome of the test.
+
+          Examples: LEGv8:
+            CBZ  register, Label
+            CBNZ register, Label
+
+  Looping Statements:
+    Format:
+      - Negate the statement from the high level language translation.
+      - Once this condition is hit then jump out of the looping structure.
+
+    Basic Block:
+      Def: A sequence of instructions without branching statements (except possibly at the end)
+           and without branch targets or branch labels. (except possibly at the beginning)
+
+    Condition Codes:
+      Negative: Condition that the results MSB is 1.
+          Zero: Result that set code was 0.
+      Overflow: Result that set the condition code overflowed.
+         Carry: The result that set the condition code had a carry out of the
+                MSB or a Borrow into the MSB.
+
+
+    Branching In LEGv8:
+      Statements: Signed:
+        EQ: Equal
+        NE: Not Equal
+        LT: Less Than
+        LE: Less equal Too
+        GT: Greater Than.
+        GE: Greater Equal Too.
+
+      Statements: Unsigned:
+        LO: Lower Value
+        LS: Lower or Same
+        HI: Higher Value
+        HS: Higher or Same
+
+    
+
+  ;

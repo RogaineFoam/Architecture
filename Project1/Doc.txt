@@ -1,0 +1,28 @@
+R-Type Instructions: "All operands are located in the registers"
+  1. Add
+  2. SUB
+  3. LSL
+  4. LSR
+  5. AND
+  6. ORR
+  7. EOR
+
+I-Type Instructions: "One of the values is supplied via an immediate value located within the instruction"
+  1. ADDI
+  2. SUBI
+
+Wide Immediate Format:
+  1. MOVK
+  2. MOVZ
+
+Load/Store Instruction: "Operations that load data from or store data to memory"
+  1. LDUR
+  2. STUR
+
+
+Conditional Branching Instructions:
+  1. CBZ
+  2. CBNZ
+
+Unconditional Branches:
+  1. B
